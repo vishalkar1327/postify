@@ -1,0 +1,337 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+.login-container{
+height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.login-card{
+width:380px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(18px);
+padding:40px 30px;
+border-radius:18px;
+color:white;
+animation:float 5s ease-in-out infinite;
+box-shadow:0 30px 60px rgba(0,0,0,.4);
+}
+
+@keyframes float{
+50%{transform:translateY(-12px)}
+}
+
+.brand{text-align:center;font-size:30px;margin-bottom:20px}
+
+.input-group{position:relative;margin-bottom:25px}
+
+.input-group input{
+width:100%;
+padding:12px;
+background:none;
+border:none;
+border-bottom:2px solid #aaa;
+color:white;
+outline:none;
+}
+
+.input-group label{
+position:absolute;
+left:10px;
+top:50%;
+transform:translateY(-50%);
+color:#aaa;
+transition:.3s;
+}
+
+.input-group input:focus+label,
+.input-group input:valid+label{
+top:-5px;
+font-size:12px;
+color:#00e6e6;
+}
+
+.options{text-align:right;margin-bottom:15px}
+
+.forgot{color:#00e6e6;cursor:pointer}
+
+.login-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#00e6e6,#0072ff);
+font-weight:600;
+cursor:pointer;
+}
+
+.switch{text-align:center;margin-top:20px}
+.switch span{color:#00e6e6;cursor:pointer}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+.login-container{
+height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.login-card{
+width:380px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(18px);
+padding:40px 30px;
+border-radius:18px;
+color:white;
+animation:float 5s ease-in-out infinite;
+box-shadow:0 30px 60px rgba(0,0,0,.4);
+}
+
+@keyframes float{
+50%{transform:translateY(-12px)}
+}
+
+.brand{text-align:center;font-size:30px;margin-bottom:20px}
+
+.input-group{position:relative;margin-bottom:25px}
+
+.input-group input{
+width:100%;
+padding:12px;
+background:none;
+border:none;
+border-bottom:2px solid #aaa;
+color:white;
+outline:none;
+}
+
+.input-group label{
+position:absolute;
+left:10px;
+top:50%;
+transform:translateY(-50%);
+color:#aaa;
+transition:.3s;
+}
+
+.input-group input:focus+label,
+.input-group input:valid+label{
+top:-5px;
+font-size:12px;
+color:#00e6e6;
+}
+
+.options{text-align:right;margin-bottom:15px}
+
+.forgot{color:#00e6e6;cursor:pointer}
+
+.login-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#00e6e6,#0072ff);
+font-weight:600;
+cursor:pointer;
+}
+
+.switch{text-align:center;margin-top:20px}
+.switch span{color:#00e6e6;cursor:pointer}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+.login-container{
+height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.login-card{
+width:380px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(18px);
+padding:40px 30px;
+border-radius:18px;
+color:white;
+animation:float 5s ease-in-out infinite;
+box-shadow:0 30px 60px rgba(0,0,0,.4);
+}
+
+@keyframes float{
+50%{transform:translateY(-12px)}
+}
+
+.brand{text-align:center;font-size:30px;margin-bottom:20px}
+
+.input-group{position:relative;margin-bottom:25px}
+
+.input-group input{
+width:100%;
+padding:12px;
+background:none;
+border:none;
+border-bottom:2px solid #aaa;
+color:white;
+outline:none;
+}
+
+.input-group label{
+position:absolute;
+left:10px;
+top:50%;
+transform:translateY(-50%);
+color:#aaa;
+transition:.3s;
+}
+
+.input-group input:focus+label,
+.input-group input:valid+label{
+top:-5px;
+font-size:12px;
+color:#00e6e6;
+}
+
+.options{text-align:right;margin-bottom:15px}
+
+.forgot{color:#00e6e6;cursor:pointer}
+
+.login-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#00e6e6,#0072ff);
+font-weight:600;
+cursor:pointer;
+}
+
+.switch{text-align:center;margin-top:20px}
+.switch span{color:#00e6e6;cursor:pointer}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+.login-container{
+height:100vh;
+background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.login-card{
+width:380px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(18px);
+padding:40px 30px;
+border-radius:18px;
+color:white;
+animation:float 5s ease-in-out infinite;
+box-shadow:0 30px 60px rgba(0,0,0,.4);
+}
+
+@keyframes float{
+50%{transform:translateY(-12px)}
+}
+
+.brand{text-align:center;font-size:30px;margin-bottom:20px;
+color: rgb(255 255 255);}
+
+.input-group{position:relative;margin-bottom:25px}
+
+.input-group input{
+width:100%;
+padding:12px;
+background:none;
+border:none;
+border-bottom:2px solid #aaa;
+color:white;
+outline:none;
+}
+
+.input-group label{
+position:absolute;
+left:10px;
+top:50%;
+transform:translateY(-50%);
+color:#aaa;
+transition:.3s;
+}
+
+.input-group input:focus+label,
+.input-group input:valid+label{
+top: 5px;
+font-size:12px;
+color:#00e6e6;
+}
+
+.options{text-align:right;margin-bottom:15px}
+
+.forgot{color:#00e6e6;cursor:pointer}
+
+.login-btn{
+width:100%;
+padding:12px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#00e6e6,#0072ff);
+font-weight:600;
+cursor:pointer;
+}
+
+.switch{text-align:center;margin-top:20px}
+.switch span{color:#00e6e6;cursor:pointer}
