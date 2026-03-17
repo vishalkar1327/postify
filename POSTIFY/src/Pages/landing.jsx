@@ -75,9 +75,9 @@ export default function Landing() {
                     <h2>Subscription Plans</h2>
 
                     <div className="step-grid">
-                        <div>Free – 5 Credits</div>
-                        <div>Pro – 100 Credits</div>
-                        <div>Premium – Unlimited</div>
+                        <div>Starter – 120 Credits</div>
+                        <div>Growth – 250 Credits</div>
+                        <div>Business – 450 Credits </div>
                     </div>
 
                 </section>

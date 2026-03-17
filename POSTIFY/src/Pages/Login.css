@@ -1,337 +1,443 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Inter:wght@400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.login-container{
-height:100vh;
-background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-display:flex;
-align-items:center;
-justify-content:center;
+.postify-login-root {
+  min-height: 100vh;
+  background: #0a0a0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+.postify-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
 
-.login-card{
-width:380px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(18px);
-padding:40px 30px;
-border-radius:18px;
-color:white;
-animation:float 5s ease-in-out infinite;
-box-shadow:0 30px 60px rgba(0,0,0,.4);
+.postify-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
 }
 
-@keyframes float{
-50%{transform:translateY(-12px)}
+.postify-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #6c47ff, #2d1b8e);
+  top: -100px;
+  left: -80px;
+  animation: postifyFloat1 8s ease-in-out infinite;
 }
 
-.brand{text-align:center;font-size:30px;margin-bottom:20px}
-
-.input-group{position:relative;margin-bottom:25px}
-
-.input-group input{
-width:100%;
-padding:12px;
-background:none;
-border:none;
-border-bottom:2px solid #aaa;
-color:white;
-outline:none;
+.postify-orb-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #ff4fa3, #8b1a6b);
+  bottom: -80px;
+  right: -60px;
+  animation: postifyFloat2 10s ease-in-out infinite;
 }
 
-.input-group label{
-position:absolute;
-left:10px;
-top:50%;
-transform:translateY(-50%);
-color:#aaa;
-transition:.3s;
+.postify-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #00d4ff, #0066aa);
+  top: 50%;
+  right: 20%;
+  animation: postifyFloat3 6s ease-in-out infinite;
 }
 
-.input-group input:focus+label,
-.input-group input:valid+label{
-top:-5px;
-font-size:12px;
-color:#00e6e6;
+@keyframes postifyFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, 40px); }
 }
 
-.options{text-align:right;margin-bottom:15px}
-
-.forgot{color:#00e6e6;cursor:pointer}
-
-.login-btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#00e6e6,#0072ff);
-font-weight:600;
-cursor:pointer;
+@keyframes postifyFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-25px, -35px); }
 }
 
-.switch{text-align:center;margin-top:20px}
-.switch span{color:#00e6e6;cursor:pointer}
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+@keyframes postifyFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(15px, -20px); }
 }
 
-.login-container{
-height:100vh;
-background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-display:flex;
-align-items:center;
-justify-content:center;
+/* ===== WRAPPER ===== */
+
+.postify-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  max-width: 900px;
+  width: 100%;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+/* ===== LEFT SIDE ===== */
+
+.postify-left {
+  flex: 1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.login-card{
-width:380px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(18px);
-padding:40px 30px;
-border-radius:18px;
-color:white;
-animation:float 5s ease-in-out infinite;
-box-shadow:0 30px 60px rgba(0,0,0,.4);
+.postify-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(108, 71, 255, 0.15);
+  border: 1px solid rgba(108, 71, 255, 0.4);
+  padding: 6px 14px;
+  border-radius: 20px;
+  width: fit-content;
 }
 
-@keyframes float{
-50%{transform:translateY(-12px)}
+.postify-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #6c47ff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #6c47ff;
+  animation: postifyPulse 2s infinite;
 }
 
-.brand{text-align:center;font-size:30px;margin-bottom:20px}
-
-.input-group{position:relative;margin-bottom:25px}
-
-.input-group input{
-width:100%;
-padding:12px;
-background:none;
-border:none;
-border-bottom:2px solid #aaa;
-color:white;
-outline:none;
+.postify-badge span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a78bfa;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
-.input-group label{
-position:absolute;
-left:10px;
-top:50%;
-transform:translateY(-50%);
-color:#aaa;
-transition:.3s;
+@keyframes postifyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
-.input-group input:focus+label,
-.input-group input:valid+label{
-top:-5px;
-font-size:12px;
-color:#00e6e6;
+.postify-left h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 40%, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.options{text-align:right;margin-bottom:15px}
-
-.forgot{color:#00e6e6;cursor:pointer}
-
-.login-btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#00e6e6,#0072ff);
-font-weight:600;
-cursor:pointer;
+.postify-left p {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  max-width: 300px;
 }
 
-.switch{text-align:center;margin-top:20px}
-.switch span{color:#00e6e6;cursor:pointer}
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+.postify-stats {
+  display: flex;
+  gap: 24px;
+  margin-top: 8px;
 }
 
-.login-container{
-height:100vh;
-background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-display:flex;
-align-items:center;
-justify-content:center;
+.postify-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+.postify-stat-num {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
 }
 
-.login-card{
-width:380px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(18px);
-padding:40px 30px;
-border-radius:18px;
-color:white;
-animation:float 5s ease-in-out infinite;
-box-shadow:0 30px 60px rgba(0,0,0,.4);
+.postify-stat-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 
-@keyframes float{
-50%{transform:translateY(-12px)}
+.postify-divider-v {
+  width: 1px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.15);
+  align-self: center;
 }
 
-.brand{text-align:center;font-size:30px;margin-bottom:20px}
+/* ===== LOGIN CARD ===== */
 
-.input-group{position:relative;margin-bottom:25px}
-
-.input-group input{
-width:100%;
-padding:12px;
-background:none;
-border:none;
-border-bottom:2px solid #aaa;
-color:white;
-outline:none;
+.postify-card {
+  flex: 0 0 380px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: postifySlideIn 0.5s ease-out;
 }
 
-.input-group label{
-position:absolute;
-left:10px;
-top:50%;
-transform:translateY(-50%);
-color:#aaa;
-transition:.3s;
+@keyframes postifySlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.input-group input:focus+label,
-.input-group input:valid+label{
-top:-5px;
-font-size:12px;
-color:#00e6e6;
+/* ===== CARD HEADER ===== */
+
+.postify-card-header {
+  margin-bottom: 28px;
 }
 
-.options{text-align:right;margin-bottom:15px}
-
-.forgot{color:#00e6e6;cursor:pointer}
-
-.login-btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#00e6e6,#0072ff);
-font-weight:600;
-cursor:pointer;
+.postify-card-header h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
 }
 
-.switch{text-align:center;margin-top:20px}
-.switch span{color:#00e6e6;cursor:pointer}
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins,sans-serif;
+.postify-card-header p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
 }
 
-.login-container{
-height:100vh;
-background:linear-gradient(-45deg,#0f2027,#203a43,#2c5364,#141e30);
-background-size:400% 400%;
-animation:bg 12s ease infinite;
-display:flex;
-align-items:center;
-justify-content:center;
+/* ===== TABS ===== */
+
+.postify-tab-row {
+  display: flex;
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 24px;
+  gap: 4px;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%}
-50%{background-position:100% 50%}
-100%{background-position:0% 50%}
+.postify-tab {
+  flex: 1;
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  text-align: center;
 }
 
-.login-card{
-width:380px;
-background:rgba(255,255,255,.12);
-backdrop-filter:blur(18px);
-padding:40px 30px;
-border-radius:18px;
-color:white;
-animation:float 5s ease-in-out infinite;
-box-shadow:0 30px 60px rgba(0,0,0,.4);
+.postify-tab.active {
+  background: #6c47ff;
+  color: white;
+  box-shadow: 0 2px 10px rgba(108, 71, 255, 0.5);
 }
 
-@keyframes float{
-50%{transform:translateY(-12px)}
+.postify-tab:not(.active):hover {
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.brand{text-align:center;font-size:30px;margin-bottom:20px;
-color: rgb(255 255 255);}
+/* ===== FORM FIELDS ===== */
 
-.input-group{position:relative;margin-bottom:25px}
-
-.input-group input{
-width:100%;
-padding:12px;
-background:none;
-border:none;
-border-bottom:2px solid #aaa;
-color:white;
-outline:none;
+.postify-field {
+  margin-bottom: 16px;
 }
 
-.input-group label{
-position:absolute;
-left:10px;
-top:50%;
-transform:translateY(-50%);
-color:#aaa;
-transition:.3s;
+.postify-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
-.input-group input:focus+label,
-.input-group input:valid+label{
-top: 5px;
-font-size:12px;
-color:#00e6e6;
+.postify-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.options{text-align:right;margin-bottom:15px}
-
-.forgot{color:#00e6e6;cursor:pointer}
-
-.login-btn{
-width:100%;
-padding:12px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#00e6e6,#0072ff);
-font-weight:600;
-cursor:pointer;
+.postify-input-icon {
+  position: absolute;
+  left: 14px;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
-.switch{text-align:center;margin-top:20px}
-.switch span{color:#00e6e6;cursor:pointer}
+.postify-field input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 14px 12px 40px;
+  font-size: 14px;
+  color: white;
+  outline: none;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.postify-field input[type="password"],
+.postify-field input[type="text"] {
+  padding-right: 42px;
+}
+
+.postify-field input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.postify-field input:focus {
+  border-color: rgba(108, 71, 255, 0.6);
+  background: rgba(108, 71, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(108, 71, 255, 0.15);
+}
+
+/* ===== EYE BUTTON ===== */
+
+.postify-eye-btn {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.4;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.postify-eye-btn:hover {
+  opacity: 0.9;
+}
+
+/* ===== REMEMBER + FORGOT ===== */
+
+.postify-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.postify-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.postify-remember input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: #6c47ff;
+}
+
+.postify-remember span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.postify-forgot {
+  font-size: 12px;
+  color: #a78bfa;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.postify-forgot:hover {
+  color: #c4b5fd;
+}
+
+/* ===== LOGIN BUTTON ===== */
+
+.postify-login-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #6c47ff, #9b59ff);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(108, 71, 255, 0.35);
+}
+
+.postify-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(108, 71, 255, 0.5);
+}
+
+.postify-login-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== FOOTER ===== */
+
+.postify-signup-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.postify-signup-link span {
+  color: #a78bfa;
+  cursor: pointer;
+  font-weight: 500;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+}
+
+.postify-signup-link span:hover {
+  color: #c4b5fd;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .postify-left {
+    display: none;
+  }
+
+  .postify-card {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .postify-wrapper {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,386 @@
+API Documentation for Postify Frontend
+
+This documentation outlines the complete set of required REST APIs necessary to replace the frontend mock logic (which currently uses `localStorage`, object URLs, and timeouts) and connect the application to a real backend database. 
+
+All endpoints requiring user access assume the presence of a valid `Bearer Token` in the `Authorization` header.
+
+---
+## 1. Authentication & User Management
+
+Endpoint: /api/auth/register
+Method: POST
+Authentication: None
+Request Body:
+{
+  "email": "user@example.com",
+  "password": "StrongPassword123!"
+}
+Response:
+{
+  "success": true,
+  "message": "Account created successfully"
+}
+
+---
+Endpoint: /api/auth/login
+Method: POST
+Authentication: None
+Request Body:
+{
+  "email": "user@example.com",
+  "password": "StrongPassword123!",
+  "role": "user" // can be "user" or "admin"
+}
+Response:
+{
+  "success": true,
+  "message": "Login successful",
+  "token": "ey...",
+  "user": {
+    "email": "user@example.com",
+    "role": "user",
+    "plan": "Free",
+    "credits": 0
+  }
+}
+
+---
+Endpoint: /api/auth/forgot-password
+Method: POST
+Authentication: None
+Request Body:
+{
+  "email": "user@example.com"
+}
+Response:
+{
+  "success": true,
+  "message": "OTP sent to email"
+}
+
+---
+Endpoint: /api/auth/verify-otp
+Method: POST
+Authentication: None
+Request Body:
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
+Response:
+{
+  "success": true,
+  "message": "OTP verified successfully",
+  "resetToken": "temp_token_for_reset"
+}
+
+---
+Endpoint: /api/auth/reset-password
+Method: POST
+Authentication: Bearer Token (resetToken)
+Request Body:
+{
+  "email": "user@example.com",
+  "newPassword": "NewStrongPassword123!"
+}
+Response:
+{
+  "success": true,
+  "message": "Password updated successfully"
+}
+
+---
+Endpoint: /api/auth/logout
+Method: POST
+Authentication: Bearer Token
+Response:
+{
+  "success": true,
+  "message": "Logged out successfully"
+}
+
+---
+Endpoint: /api/user/profile
+Method: GET
+Authentication: Bearer Token
+Response:
+{
+  "user": {
+    "name": "Vishal Sharma",
+    "email": "vishal@postify.ai",
+    "brand": "Postify Brand",
+    "website": "https://postify.ai",
+    "plan": "Free",
+    "credits": 0
+  }
+}
+
+---
+Endpoint: /api/user/profile
+Method: PUT
+Authentication: Bearer Token
+Request Body:
+{
+  "name": "Vishal Sharma",
+  "email": "vishal@postify.ai",
+  "brand": "Postify Brand LLC",
+  "website": "https://postify.ai"
+}
+Response:
+{
+  "success": true,
+  "message": "Profile saved successfully",
+  "user": {
+    "name": "Vishal Sharma",
+    "email": "vishal@postify.ai",
+    "brand": "Postify Brand LLC",
+    "website": "https://postify.ai",
+    "plan": "Free",
+    "credits": 0
+  }
+}
+
+---
+## 2. Plans & Payments
+
+Endpoint: /api/plans
+Method: GET
+Authentication: None (or Bearer Token)
+Response:
+{
+  "plans": [
+    {
+      "name": "Pro",
+      "price": 499,
+      "credits": 500,
+      "features": "All Styles,Priority Rendering,Premium Support"
+    }
+  ]
+}
+
+---
+Endpoint: /api/payments/checkout
+Method: POST
+Authentication: Bearer Token
+Request Body:
+{
+  "planName": "Pro",
+  "amount": 499,
+  "method": "upi", // can be "upi", "card", or "bank"
+  "paymentDetails": {
+    "upiId": "username@okbank" // Or Card / Bank info based on the method
+  }
+}
+Response:
+{
+  "success": true,
+  "transactionId": "TXN12345678",
+  "message": "Payment successful",
+  "creditsAdded": 500,
+  "user": {
+    "plan": "Pro",
+    "credits": 500
+  }
+}
+
+---
+## 3. Image Generation & Creative Studio
+
+Endpoint: /api/image/generate
+Method: POST
+Authentication: Bearer Token
+Request Body (multipart/form-data):
+- image: (File) Uploaded product image file
+- style: "Ecommerce" (String)
+- background: "Outdoor" (String)
+- angle: "Front" (String)
+- description: "Light and airy setting" (String)
+Response:
+{
+  "success": true,
+  "imageUrl": "https://bucket.example.com/assets/generated-123.jpg",
+  "creditsRemaining": 392,
+  "metadata": {
+    "id": "gen_123",
+    "time": "10:30 AM",
+    "style": "Ecommerce",
+    "background": "Outdoor",
+    "angle": "Front"
+  }
+}
+
+---
+Endpoint: /api/content/generate-caption
+Method: POST
+Authentication: Bearer Token
+Request Body:
+{
+  "productName": "Shoes",
+  "audience": "creator",
+  "platform": "Instagram",
+  "image": "(Optional File upload for context)"
+}
+Response:
+{
+  "success": true,
+  "caption": "Create with Shoes",
+  "description": "Reel ready",
+  "hashtags": "#Creator #Shoes"
+}
+
+---
+Endpoint: /api/history
+Method: GET
+Authentication: Bearer Token
+Response:
+{
+  "history": [
+    {
+      "id": "gen_123",
+      "url": "https://bucket.example.com/assets/generated-123.jpg",
+      "style": "Ecommerce",
+      "bg": "Outdoor",
+      "angle": "Front",
+      "time": "10:30 AM",
+      "desc": "Light and airy setting",
+      "isFavorited": false
+    }
+  ]
+}
+
+---
+Endpoint: /api/history
+Method: DELETE
+Authentication: Bearer Token
+Response:
+{
+  "success": true,
+  "message": "History cleared successfully"
+}
+
+---
+Endpoint: /api/history/{id}/approve
+Method: POST
+Authentication: Bearer Token
+Response:
+{
+  "success": true,
+  "message": "Result approved & saved to assets!"
+}
+
+---
+Endpoint: /api/assets
+Method: GET
+Authentication: Bearer Token
+Response:
+{
+  "assets": [
+    {
+      "id": "asset_01",
+      "url": "https://bucket.example.com/assets/original_product_1.jpg",
+      "uploadedAt": "2026-03-17T10:00:00Z"
+    }
+  ]
+}
+
+---
+Endpoint: /api/favorites
+Method: GET
+Authentication: Bearer Token
+Response:
+{
+  "favorites": [
+    {
+      "id": "gen_123",
+      "url": "https://bucket.example.com/assets/generated-123.jpg",
+      "style": "Ecommerce",
+      "bg": "Outdoor",
+      "angle": "Front",
+      "time": "10:30 AM"
+    }
+  ]
+}
+
+---
+Endpoint: /api/favorites
+Method: POST
+Authentication: Bearer Token
+Request Body:
+{
+  "imageId": "gen_123",
+  "url": "https://bucket.example.com/assets/generated-123.jpg",
+  "style": "Ecommerce",
+  "bg": "Outdoor",
+  "angle": "Front",
+  "time": "10:30 AM"
+}
+Response:
+{
+  "success": true,
+  "message": "Added to favorites"
+}
+
+---
+Endpoint: /api/favorites/{imageId}
+Method: DELETE
+Authentication: Bearer Token
+Response:
+{
+  "success": true,
+  "message": "Removed from favorites"
+}
+
+---
+## 4. Admin Management
+
+Endpoint: /api/admin/users
+Method: GET
+Authentication: Bearer Token (Admin Role Required)
+Response:
+{
+  "users": [
+    {
+      "id": "usr_123",
+      "name": "Vishal",
+      "email": "user@postify.ai",
+      "plan": "Premium",
+      "credits": 9
+    }
+  ]
+}
+
+---
+Endpoint: /api/admin/users/{userId}/credits
+Method: PUT
+Authentication: Bearer Token (Admin Role Required)
+Request Body:
+{
+  "credits": 10
+}
+Response:
+{
+  "success": true,
+  "message": "User credits updated successfully",
+  "user": {
+    "id": "usr_123",
+    "credits": 10
+  }
+}
+
+---
+Endpoint: /api/admin/users/{userId}/plan
+Method: PUT
+Authentication: Bearer Token (Admin Role Required)
+Request Body:
+{
+  "plan": "Free" // or "Premium"
+}
+Response:
+{
+  "success": true,
+  "message": "User plan updated successfully",
+  "user": {
+    "id": "usr_123",
+    "plan": "Free"
+  }
+}

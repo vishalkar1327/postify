@@ -1,0 +1,113 @@
+Postify Backend - Database Models Schema
+
+This document outlines the suggested database schemas (using NoSQL/MongoDB or equivalent structures) required to support the Postify backend features. 
+
+---
+### 1. User Model
+Stores user details, authentication credentials, and their subscription state.
+
+{
+  "_id": "ObjectId",
+  "name": "String (required)",
+  "email": "String (required, unique)",
+  "passwordHash": "String (required)",
+  "role": "String (enum: ['user', 'admin'], default: 'user')",
+  "brand": "String",
+  "website": "String",
+  "plan": "String (enum: ['Free', 'Starter', 'Growth', 'Business', 'Premium'], default: 'Free')",
+  "credits": "Number (default: 0)",
+  "resetToken": "String (optional)",
+  "resetTokenExpires": "Date (optional)",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+
+---
+### 2. OTP Verification Model
+Stores short-lived OTPs for password recovery.
+
+{
+  "_id": "ObjectId",
+  "email": "String (required, indexed)",
+  "otp": "String (required)",
+  "expiresAt": "Date (required, TTL index - auto expires after 10 mins)"
+}
+
+---
+### 3. Plan Model
+Stores available subscription tiers allowing dynamic fetching of plans.
+
+{
+  "_id": "ObjectId",
+  "name": "String (required)",
+  "price": "Number (required)",
+  "credits": "Number (required)",
+  "features": "[String] (Array of feature descriptions)",
+  "isActive": "Boolean (default: true)"
+}
+
+---
+### 4. Transaction / Payment Model
+Records user payments for credit top-ups and subscriptions.
+
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User, required)",
+  "planName": "String (required)",
+  "amount": "Number (required)",
+  "creditsAdded": "Number (required)",
+  "paymentMethod": "String (enum: ['upi', 'card', 'bank'], required)",
+  "paymentDetails": {
+    "upiId": "String (optional)",
+    "cardLast4": "String (optional)",
+    "bankLast4": "String (optional)"
+  },
+  "transactionId": "String (required, unique)",
+  "status": "String (enum: ['Success', 'Pending', 'Failed'], required)",
+  "createdAt": "Date"
+}
+
+---
+### 5. Asset Model
+Tracks original product images uploaded by the user.
+
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User, required)",
+  "originalUrl": "String (required, S3/Cloud Storage URL)",
+  "createdAt": "Date"
+}
+
+---
+### 6. Generation History Model
+Records AI-generated images, their specific configurations, and whether the user favorited them.
+
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User, required)",
+  "assetId": "ObjectId (ref: Asset, optional)",
+  "imageUrl": "String (required, S3/Cloud Storage URL)",
+  "style": "String (required, e.g., 'Ecommerce', 'Instagram Ad')",
+  "background": "String (required, e.g., 'Outdoor', 'Studio')",
+  "angle": "String (required, e.g., 'Front', 'Left')",
+  "description": "String",
+  "isFavorited": "Boolean (default: false)",
+  "isApproved": "Boolean (default: false)",
+  "createdAt": "Date"
+}
+
+---
+### 7. Generated Content (Captions) Model
+Records text-based AI content generated for social platforms.
+
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (ref: User, required)",
+  "productName": "String",
+  "audience": "String (e.g., 'small_business')",
+  "platform": "String (e.g., 'Instagram')",
+  "caption": "String (required)",
+  "description": "String",
+  "hashtags": "String",
+  "createdAt": "Date"
+}

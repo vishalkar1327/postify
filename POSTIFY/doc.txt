@@ -1,0 +1,62 @@
+Postify Backend - Architecture & Development Guide
+
+This document provides a comprehensive overview of the required backend architecture to support the frontend React components built for Postify AI.
+
+---
+## 1. Core Technologies Recommended
+- **Framework**: Node.js with Express / NestJS (Or Python FastAPI/Django if preferred).
+- **Database**: MongoDB (Mongoose) for flexibility with JSON documents mapping closely to the frontend state. PostgreSQL is also viable if strictly relational design is preferred.
+- **File Storage**: AWS S3, Google Cloud Storage, or Cloudinary for securely storing user-uploaded Assets and Generated AI Image URLs.
+- **Authentication**: JWT (JSON Web Tokens) for managing stateless sessions.
+- **Email Service**: SendGrid, AWS SES, or Nodemailer for delivering Forgot Password OTPs securely.
+- **AI Integration**: Integration with proper Generative AI API endpoints (e.g., OpenAI API for text/captions, Stable Diffusion / Midjourney / DALL-E for image generation and transformation).
+
+---
+## 2. API Security & Middleware Dependencies
+1. **CORS Middleware**: Ensure cross-origin requests are accepted from the frontend domain (`localhost:5173` for dev, production URL later).
+2. **Auth Middleware**: A function that checks for a `Bearer Token` in the `Authorization` header, decodes it, verifies the signature, and attaches `req.user` to the request pipeline.
+3. **Role-based Middleware**: Specific routes like `/api/admin/*` must verify that the decoded `req.user.role === 'admin'`.
+4. **File Handling Middleware**: Use `multer` (for Express) to intercept `multipart/form-data` uploads, validate file types (images only), and stream them directly to the Cloud Storage bucket to prevent local server bloat.
+5. **Rate Limiting**: Apply express-rate-limit specifically on Auth routes (OTP, Login) and AI generation endpoints to prevent abuse.
+
+---
+## 3. High-level Application Flows
+
+### Flow 1: Authentication & Account Recovery
+1. **Sign Up**: Validate strong password regex. Hash the password using `bcrypt` before storing. 
+2. **Login**: Compare mapped hashes. Generate a signed `JWT` token containing the user's `_id` and `role`. Returns the current user profile including `plan` and `credits`.
+3. **Forgot Password**: Look up the email. Generate a 6-digit OTP, store it in the DB (TTL of 10 mins) and send it via Email provider. 
+4. **Verify OTP**: Once verified, issue a short-lived temporary token allowing them to hit the Reset Password endpoint safely.
+5. **Reset Password**: Hash the new password and update the User record. Clear OTPs.
+
+### Flow 2: Billing & Plans
+1. The frontend invokes `/api/plans` dynamically to show available options. These should rarely hardcode in the frontend.
+2. User initiates a checkout. The backend validates payment (Mocked for now, integrate Stripe / Razorpay Webhooks later).
+3. Upon payment success (`Transaction` model created), find the `User` and increment their `credits` by `plan.credits`, and update their `plan` string.
+
+### Flow 3: Image Generation Pipeline (Core App Logic)
+1. **Upload**: User drags/drops an image. Frontend calls `/api/image/generate` with `multipart/form-data`.
+2. **Validation**: Check if user `credits >= 8`. Reject if insufficient.
+3. **File Storage**: Upload original image to S3 bucket. Store reference in `Asset` model.
+4. **AI Processing**: Trigger backend AI Service (e.g., Stable Diffusion API) passing the original image URL, requested `style`, `background`, `angle`, and `description`.
+5. **Completion**: 
+   - Deduct `8` credits from User.
+   - Save the AI generated result URL to S3.
+   - Store the result in the `History` model mapping to the user.
+   - Return the generated Image URL and remaining credits to frontend.
+
+### Flow 4: Content Auto-generation
+1. User requests Instagram captions via `/api/content/generate-caption`.
+2. Backend validates active token, constructs a strict system prompt (e.g. "Act as an expert marketer targeting [audience] on [platform] for product [productName]. Return caption, description, and hashtags as JSON").
+3. Backend calls OpenAI's GPT-4 endpoint avoiding frontend exposure of the OpenAI API Key.
+4. Save to `GeneratedContent` model if tracking is needed, and return the structured JSON strictly to frontend.
+
+### Flow 5: Dashboard Viewing (Assets & History)
+1. History: Retrieve all items from `Generation History Model` where `userId` equals `req.user._id` sorted by `createdAt` descending.
+2. Favorites: Filter History endpoint or fetch only records where `isFavorited: true`. (Frontend toggling the star icon triggers a PATCH/POST request to update this DB field).
+3. Assets: Fetch unique `originalUrl`s or `Asset Model` records for the user.
+
+---
+## 4. Admin Workarounds
+1. Admin logins leverage the exact same endpoint as users but navigate to `/admin` UI logically if `role === 'admin'`.
+2. Ensure `/api/admin/users/*` verifies the Admin JWT properly before fetching the whole user database or altering a user's credit balance to prevent privilege escalation attacks.

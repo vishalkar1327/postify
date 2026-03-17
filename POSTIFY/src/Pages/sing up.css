@@ -1,0 +1,490 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=Inter:wght@400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.postify-signup-root {
+  min-height: 100vh;
+  background: #0a0a0f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+.postify-grid-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.postify-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.postify-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #ff4fa3, #8b1a6b);
+  top: -100px;
+  right: -80px;
+  animation: postifyFloat1 8s ease-in-out infinite;
+}
+
+.postify-orb-2 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, #6c47ff, #2d1b8e);
+  bottom: -80px;
+  left: -60px;
+  animation: postifyFloat2 10s ease-in-out infinite;
+}
+
+.postify-orb-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #00d4ff, #0066aa);
+  top: 40%;
+  left: 18%;
+  animation: postifyFloat3 6s ease-in-out infinite;
+}
+
+@keyframes postifyFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-30px, 40px); }
+}
+
+@keyframes postifyFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(25px, -35px); }
+}
+
+@keyframes postifyFloat3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-15px, 20px); }
+}
+
+/* ===== WRAPPER ===== */
+
+.postify-signup-wrapper {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* ===== SIGNUP CARD ===== */
+
+.postify-signup-card {
+  flex: 0 0 400px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 36px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: postifySlideIn 0.5s ease-out;
+}
+
+@keyframes postifySlideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.postify-signup-card-header {
+  margin-bottom: 28px;
+}
+
+.postify-signup-card-header h2 {
+  font-family: 'Sora', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 6px;
+}
+
+.postify-signup-card-header p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* ===== FORM FIELDS ===== */
+
+.postify-signup-field {
+  margin-bottom: 16px;
+}
+
+.postify-signup-field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.postify-signup-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.postify-signup-input-icon {
+  position: absolute;
+  left: 14px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.postify-signup-field input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 12px 14px 12px 40px;
+  font-size: 14px;
+  color: white;
+  outline: none;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.postify-signup-field input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.postify-signup-field input:focus {
+  border-color: rgba(255, 79, 163, 0.6);
+  background: rgba(255, 79, 163, 0.06);
+  box-shadow: 0 0 0 3px rgba(255, 79, 163, 0.12);
+}
+
+/* ===== PASSWORD STRENGTH ===== */
+
+.postify-strength-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.postify-strength-segment {
+  flex: 1;
+  height: 3px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  transition: background 0.3s;
+}
+
+.postify-strength-segment.weak   { background: #ef4444; }
+.postify-strength-segment.fair   { background: #f97316; }
+.postify-strength-segment.good   { background: #eab308; }
+.postify-strength-segment.strong { background: #22c55e; }
+
+.postify-strength-label {
+  font-size: 11px;
+  margin-top: 5px;
+  color: rgba(255, 255, 255, 0.35);
+  transition: color 0.3s;
+}
+
+.postify-strength-label.weak   { color: #ef4444; }
+.postify-strength-label.fair   { color: #f97316; }
+.postify-strength-label.good   { color: #eab308; }
+.postify-strength-label.strong { color: #22c55e; }
+
+/* ===== PASSWORD RULES ===== */
+
+.postify-rules {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.postify-rule {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  transition: color 0.2s;
+}
+
+.postify-rule.met {
+  color: #22c55e;
+}
+
+.postify-rule-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.postify-rule.met .postify-rule-dot {
+  background: #22c55e;
+}
+
+/* ===== SUBMIT BUTTON ===== */
+
+.postify-signup-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, #ff4fa3, #c2185b);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Sora', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+  box-shadow: 0 8px 24px rgba(255, 79, 163, 0.3);
+}
+
+.postify-signup-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 32px rgba(255, 79, 163, 0.5);
+}
+
+.postify-signup-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== OR DIVIDER ===== */
+
+.postify-signup-or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.postify-signup-or-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.postify-signup-or-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== GOOGLE BUTTON ===== */
+
+.postify-signup-google-btn {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+}
+
+.postify-signup-google-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== LOGIN LINK ===== */
+
+.postify-login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.postify-login-link span {
+  color: #f472b6;
+  cursor: pointer;
+  font-weight: 500;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+}
+
+.postify-login-link span:hover {
+  color: #fb7bb8;
+}
+
+/* ===== RIGHT SIDE PANEL ===== */
+
+.postify-signup-right {
+  flex: 1;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.postify-signup-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 79, 163, 0.12);
+  border: 1px solid rgba(255, 79, 163, 0.35);
+  padding: 6px 14px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.postify-signup-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: #ff4fa3;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff4fa3;
+  animation: postifyPulse 2s infinite;
+}
+
+.postify-signup-badge span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #f9a8d4;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+@keyframes postifyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.postify-signup-right h1 {
+  font-family: 'Sora', sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #fff 40%, #f9a8d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.postify-signup-right p {
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.7;
+  max-width: 300px;
+}
+
+/* ===== FEATURE LIST ===== */
+
+.postify-features {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.postify-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.postify-feature-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 79, 163, 0.12);
+  border: 1px solid rgba(255, 79, 163, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.postify-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.postify-feature-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.postify-feature-desc {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 768px) {
+  .postify-signup-right {
+    display: none;
+  }
+
+  .postify-signup-card {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .postify-signup-wrapper {
+    justify-content: center;
+  }
+}
+
+/* ===== EYE BUTTON ===== */
+
+.postify-signup-eye-btn {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.4;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.postify-signup-eye-btn:hover {
+  opacity: 0.9;
+}
+
+.postify-signup-field input[type="password"],
+.postify-signup-field input[type="text"] {
+  padding-right: 42px;
+}
