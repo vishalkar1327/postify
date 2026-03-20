@@ -1,6 +1,6 @@
 import "./Login.css";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Login({ setIsAuth }) {
   const [email, setEmail] = useState("");
@@ -8,10 +8,18 @@ export default function Login({ setIsAuth }) {
   const [role, setRole] = useState("user");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const location = useLocation();
   const nav = useNavigate();
 
-  // ===== LOAD SAVED CREDENTIALS ON MOUNT =====
+  // ===== LOAD SAVED CREDENTIALS OR PASSED EMAIL =====
   useEffect(() => {
+    // 1. If we came from Signup or Reset Password with an email
+    if (location.state?.email) {
+      setEmail(location.state.email);
+      return;
+    }
+
+    // 2. Otherwise fall back to Remembered Email
     const savedEmail = localStorage.getItem("rememberedEmail");
     const savedPassword = localStorage.getItem("rememberedPassword");
     const savedRemember = localStorage.getItem("rememberMe");
@@ -21,11 +29,19 @@ export default function Login({ setIsAuth }) {
       setPassword(savedPassword);
       setRememberMe(true);
     }
-  }, []);
+  }, [location.state]);
 
   const login = () => {
-    if (!email || !password) {
-      alert("Please enter your email and password.");
+    if (!email && !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+    if (!email) {
+      alert("Please enter your email.");
+      return;
+    }
+    if (!password) {
+      alert("Please enter your password.");
       return;
     }
 
@@ -64,21 +80,26 @@ export default function Login({ setIsAuth }) {
         return;
       }
 
-      const users = JSON.parse(localStorage.getItem("users")) || [];
-      const user = users.find(
-        (u) => u.email === email && u.password === password
-      );
+      const users = JSON.parse(localStorage.getItem("postify_users")) || [];
+      const userExists = users.find((u) => u.email === email);
 
-      if (user) {
-        localStorage.setItem("isAuth", "true");
-        localStorage.setItem("role", "user");
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        setIsAuth(true);
-        alert("Login successful!");
-        nav("/user-dashboard");
-      } else {
-        alert("Invalid email or password.");
+      if (!userExists) {
+        alert("Account not found. Please sign up.");
+        return;
       }
+
+      if (userExists.password !== password) {
+        alert("Incorrect password. Please try again.");
+        return;
+      }
+
+      // Successful login
+      localStorage.setItem("isAuth", "true");
+      localStorage.setItem("role", "user");
+      localStorage.setItem("currentUser", JSON.stringify(userExists));
+      setIsAuth(true);
+      alert("Login successful!");
+      nav("/user-dashboard");
     }
   };
 
@@ -137,13 +158,21 @@ export default function Login({ setIsAuth }) {
           <div className="postify-tab-row">
             <button
               className={`postify-tab ${role === "user" ? "active" : ""}`}
-              onClick={() => setRole("user")}
+              onClick={() => {
+                setRole("user");
+                setEmail("");
+                setPassword("");
+              }}
             >
               User
             </button>
             <button
               className={`postify-tab ${role === "admin" ? "active" : ""}`}
-              onClick={() => setRole("admin")}
+              onClick={() => {
+                setRole("admin");
+                setEmail("");
+                setPassword("");
+              }}
             >
               Admin
             </button>

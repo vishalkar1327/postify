@@ -63,18 +63,39 @@
 }
 
 @keyframes postifyFloat1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-30px, 40px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-30px, 40px);
+  }
 }
 
 @keyframes postifyFloat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(25px, -35px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(25px, -35px);
+  }
 }
 
 @keyframes postifyFloat3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-15px, 20px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-15px, 20px);
+  }
 }
 
 /* ===== WRAPPER ===== */
@@ -104,8 +125,15 @@
 }
 
 @keyframes postifySlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .postify-signup-card-header {
@@ -193,10 +221,21 @@
   transition: background 0.3s;
 }
 
-.postify-strength-segment.weak   { background: #ef4444; }
-.postify-strength-segment.fair   { background: #f97316; }
-.postify-strength-segment.good   { background: #eab308; }
-.postify-strength-segment.strong { background: #22c55e; }
+.postify-strength-segment.weak {
+  background: #ef4444;
+}
+
+.postify-strength-segment.fair {
+  background: #f97316;
+}
+
+.postify-strength-segment.good {
+  background: #eab308;
+}
+
+.postify-strength-segment.strong {
+  background: #22c55e;
+}
 
 .postify-strength-label {
   font-size: 11px;
@@ -205,10 +244,21 @@
   transition: color 0.3s;
 }
 
-.postify-strength-label.weak   { color: #ef4444; }
-.postify-strength-label.fair   { color: #f97316; }
-.postify-strength-label.good   { color: #eab308; }
-.postify-strength-label.strong { color: #22c55e; }
+.postify-strength-label.weak {
+  color: #ef4444;
+}
+
+.postify-strength-label.fair {
+  color: #f97316;
+}
+
+.postify-strength-label.good {
+  color: #eab308;
+}
+
+.postify-strength-label.strong {
+  color: #22c55e;
+}
 
 /* ===== PASSWORD RULES ===== */
 
@@ -382,8 +432,15 @@
 }
 
 @keyframes postifyPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .postify-signup-right h1 {
@@ -451,17 +508,34 @@
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
+  .postify-signup-root {
+    padding: 1rem;
+  }
+
+  .postify-signup-wrapper {
+    gap: 0;
+    justify-content: center;
+  }
+
   .postify-signup-right {
     display: none;
   }
 
   .postify-signup-card {
-    flex: 0 0 100%;
+    flex: 0 1 100%;
     width: 100%;
+    padding: 24px;
+    border-radius: 20px;
   }
 
-  .postify-signup-wrapper {
-    justify-content: center;
+  .postify-signup-card-header h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .postify-signup-card {
+    padding: 20px 16px;
   }
 }
 

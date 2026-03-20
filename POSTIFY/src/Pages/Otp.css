@@ -63,18 +63,39 @@
 }
 
 @keyframes otpFloat1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(28px, 36px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(28px, 36px);
+  }
 }
 
 @keyframes otpFloat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-22px, -30px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-22px, -30px);
+  }
 }
 
 @keyframes otpFloat3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(14px, -18px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(14px, -18px);
+  }
 }
 
 /* ===== WRAPPER ===== */
@@ -128,8 +149,15 @@
 }
 
 @keyframes otpPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .otp-left h1 {
@@ -204,8 +232,15 @@
 }
 
 @keyframes otpSlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== CARD HEADER ===== */
@@ -371,7 +406,43 @@
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
-  .otp-left { display: none; }
-  .otp-card { flex: 0 0 100%; width: 100%; }
-  .otp-wrapper { justify-content: center; }
+  .otp-root {
+    padding: 1rem;
+  }
+
+  .otp-wrapper {
+    gap: 0;
+    justify-content: center;
+  }
+
+  .otp-left {
+    display: none;
+  }
+
+  .otp-card {
+    flex: 0 1 100%;
+    width: 100%;
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .otp-card-header h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .otp-card {
+    padding: 20px 16px;
+  }
+
+  .otp-boxes {
+    gap: 6px;
+  }
+
+  .otp-box {
+    width: 40px;
+    height: 48px;
+    font-size: 18px;
+  }
 }

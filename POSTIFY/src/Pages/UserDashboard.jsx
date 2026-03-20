@@ -20,11 +20,26 @@ const Dashboard = ({ onLogout }) => {
   const [history, setHistory] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const [profileName, setProfileName] = useState("Vishal Sharma");
-  const [profileEmail, setProfileEmail] = useState("vishal@postify.ai");
-  const [profileBrand, setProfileBrand] = useState("");
-  const [profileWebsite, setProfileWebsite] = useState("");
+  const [userEmail, setUserEmail] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return user?.email || "";
+  });
+
+  const [profileName, setProfileName] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return user?.name || "User";
+  });
+  const [profileEmail, setProfileEmail] = useState(userEmail);
+  const [profileBrand, setProfileBrand] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return user?.brand || "";
+  });
+  const [profileWebsite, setProfileWebsite] = useState(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    return user?.website || "";
+  });
 
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem('postify_users');
@@ -35,7 +50,7 @@ const Dashboard = ({ onLogout }) => {
     return saved ? JSON.parse(saved) : [];
   });
 
-  const currentUser = users.find(u => u.email === profileEmail) || { credits: 0, plan: "Free" };
+  const currentUser = users.find(u => u.email === userEmail) || { credits: 0, plan: "Free" };
   const credits = currentUser.credits;
 
   React.useEffect(() => {
@@ -59,6 +74,7 @@ const Dashboard = ({ onLogout }) => {
 
   const navigate = (page) => {
     setCurrentPage(page);
+    setIsSidebarOpen(false);
   };
 
   const pageTitles = {
@@ -95,9 +111,9 @@ const Dashboard = ({ onLogout }) => {
       showToast("Not enough credits! Please purchase a plan.");
       return;
     }
-    
+
     setIsGenerating(true);
-    
+
     const updatedUsers = users.map(u => u.email === profileEmail ? { ...u, credits: Math.max(0, u.credits - 8) } : u);
     setUsers(updatedUsers);
     localStorage.setItem('postify_users', JSON.stringify(updatedUsers));
@@ -151,7 +167,16 @@ const Dashboard = ({ onLogout }) => {
   };
 
   const saveProfile = () => {
-    showToast("Profile saved!");
+    const updatedUsers = users.map(u =>
+      u.email === userEmail ? { ...u, name: profileName, email: profileEmail, brand: profileBrand, website: profileWebsite } : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem('postify_users', JSON.stringify(updatedUsers));
+
+    const updatedCurrentUser = { ...currentUser, name: profileName, email: profileEmail, brand: profileBrand, website: profileWebsite };
+    localStorage.setItem('currentUser', JSON.stringify(updatedCurrentUser));
+    setUserEmail(profileEmail);
+    showToast("Profile saved successfully!");
   };
 
   const handlePurchase = (plan) => {
@@ -159,7 +184,7 @@ const Dashboard = ({ onLogout }) => {
   };
 
   const handlePaymentSuccess = (plan, method, details) => {
-    const updatedUsers = users.map(u => 
+    const updatedUsers = users.map(u =>
       u.email === profileEmail ? { ...u, credits: u.credits + plan.credits, plan: plan.name } : u
     );
     setUsers(updatedUsers);
@@ -180,12 +205,12 @@ const Dashboard = ({ onLogout }) => {
       date: new Date().toISOString().split("T")[0],
       time: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })
     };
-    
+
     const newTxns = [newTxn, ...txns];
     localStorage.setItem('postify_transactions', JSON.stringify(newTxns));
-    
+
     setSelectedPlan(null);
-    showToast(`Successfully purchased ${plan.name} plan! (+${plan.credits} credits)`);
+    showToast(`Successfully purchased ${plan.name} plan! (+${plan.credits} credits). TXN ID: ${newTxn.transactionId}`);
   };
 
   const clearHistory = () => {
@@ -200,11 +225,11 @@ const Dashboard = ({ onLogout }) => {
 
   // ── ANGLE SVGs ──
   const angleSVGs = {
-    Front: (<svg viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9"/><polyline points="52,28 52,52 28,52" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9"/></svg>),
-    Left: (<svg viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9"/><polyline points="8,28 8,52 32,52" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9"/></svg>),
-    Right: (<svg viewBox="0 0 60 60" fill="none"><line x1="30" y1="10" x2="30" y2="50" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.9"/><line x1="10" y1="30" x2="50" y2="30" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.9"/></svg>),
-    Back: (<svg viewBox="0 0 60 60" fill="none"><rect x="44" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9"/><polyline points="8,8 8,36 36,36" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9"/></svg>),
-    Top: (<svg viewBox="0 0 60 60" fill="none"><line x1="40" y1="8" x2="52" y2="8" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/><line x1="52" y1="8" x2="52" y2="20" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/><rect x="44" y="44" width="8" height="8" rx="1.5" fill="white" opacity="0.9"/><line x1="8" y1="40" x2="8" y2="52" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/><line x1="8" y1="52" x2="20" y2="52" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9"/></svg>),
+    Front: (<svg viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9" /><polyline points="52,28 52,52 28,52" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" /></svg>),
+    Left: (<svg viewBox="0 0 60 60" fill="none"><rect x="8" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9" /><polyline points="8,28 8,52 32,52" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" /></svg>),
+    Right: (<svg viewBox="0 0 60 60" fill="none"><line x1="30" y1="10" x2="30" y2="50" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.9" /><line x1="10" y1="30" x2="50" y2="30" stroke="white" strokeWidth="4" strokeLinecap="round" opacity="0.9" /></svg>),
+    Back: (<svg viewBox="0 0 60 60" fill="none"><rect x="44" y="8" width="8" height="8" rx="1.5" fill="white" opacity="0.9" /><polyline points="8,8 8,36 36,36" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" opacity="0.9" /></svg>),
+    Top: (<svg viewBox="0 0 60 60" fill="none"><line x1="40" y1="8" x2="52" y2="8" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" /><line x1="52" y1="8" x2="52" y2="20" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" /><rect x="44" y="44" width="8" height="8" rx="1.5" fill="white" opacity="0.9" /><line x1="8" y1="40" x2="8" y2="52" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" /><line x1="8" y1="52" x2="20" y2="52" stroke="white" strokeWidth="3.5" strokeLinecap="round" opacity="0.9" /></svg>),
   };
 
   // ── PAGES ──
@@ -448,11 +473,12 @@ const Dashboard = ({ onLogout }) => {
                 <button className="plan-btn upgrade-plan-btn">Purchase Plan</button>
               )}
             </div>
-            <p className="plan-feature" style={{marginTop:"8px", color:"var(--accent2)"}}>+{plan.credits} Credits</p>
+            <p className="plan-feature" style={{ marginTop: "8px", color: "var(--accent2)" }}>+{plan.credits} Credits</p>
             {plan.features.split(",").map((f) => <p key={f} className="plan-feature">{f}</p>)}
           </div>
         ))}
       </div>
+
     </div>
   );
 
@@ -465,17 +491,20 @@ const Dashboard = ({ onLogout }) => {
       <div className={`toast ${showToastFlag ? "toast-show" : ""}`}>{toast}</div>
 
       {selectedPlan && (
-        <PlansPayment 
-          plan={selectedPlan} 
-          onCancel={() => setSelectedPlan(null)} 
-          onSuccess={handlePaymentSuccess} 
+        <PlansPayment
+          plan={selectedPlan}
+          onCancel={() => setSelectedPlan(null)}
+          onSuccess={handlePaymentSuccess}
         />
       )}
 
+      {/* SIDEBAR OVERLAY */}
+      {isSidebarOpen && <div className="sidebar-overlay" onClick={() => setIsSidebarOpen(false)}></div>}
+
       {/* SIDEBAR */}
-      <aside className="dash-sidebar">
+      <aside className={`dash-sidebar ${isSidebarOpen ? "sidebar-active" : ""}`}>
         <div className="dash-logo-wrap">
-          <span className="dash-logo-text">Postify</span>
+          <span className="dash-logo-text">POSTIFY</span>
         </div>
         <nav className="dash-nav">
           <div className="dash-nav-group">
@@ -503,9 +532,12 @@ const Dashboard = ({ onLogout }) => {
       {/* MAIN */}
       <main className="dash-main">
         <header className="dash-topbar">
-          <div>
-            <h1 className="dash-topbar-title">{pageTitles[currentPage][0]}</h1>
-            <p className="dash-topbar-sub">{pageTitles[currentPage][1]}</p>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>☰</button>
+            <div>
+              <h1 className="dash-topbar-title">{pageTitles[currentPage][0]}</h1>
+              <p className="dash-topbar-sub">{pageTitles[currentPage][1]}</p>
+            </div>
           </div>
           <div className="dash-user-badge">
             <span className="dash-user-avatar">{avatarInitials}</span>
@@ -514,7 +546,7 @@ const Dashboard = ({ onLogout }) => {
         </header>
         {(pages[currentPage] || renderStudio)()}
       </main>
-    </div>
+    </div >
   );
 };
 

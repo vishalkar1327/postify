@@ -12,7 +12,7 @@ export default function Forgot() {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = JSON.parse(localStorage.getItem("postify_users")) || [];
     const user = users.find((u) => u.email === email);
 
     if (!user) {
@@ -133,7 +133,7 @@ export default function Forgot() {
           </form>
 
           <div className="fp-back">
-            <button type="button" className="fp-back-btn" onClick={() => nav("/")}>
+            <button type="button" className="fp-back-btn" onClick={() => nav("/login")}>
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>

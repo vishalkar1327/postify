@@ -4,16 +4,16 @@ import { useNavigate } from "react-router-dom";
 
 function getStrength(password) {
   let score = 0;
-  if (password.length >= 8)        score++;
-  if (/[A-Z]/.test(password))      score++;
-  if (/[0-9]/.test(password))      score++;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
   if (/[!@#$%^&*]/.test(password)) score++;
 
-  if (score === 0) return { level: 0, label: "",       cls: "" };
-  if (score === 1) return { level: 1, label: "Weak",   cls: "weak" };
-  if (score === 2) return { level: 2, label: "Fair",   cls: "fair" };
-  if (score === 3) return { level: 3, label: "Good",   cls: "good" };
-  return             { level: 4, label: "Strong", cls: "strong" };
+  if (score === 0) return { level: 0, label: "", cls: "" };
+  if (score === 1) return { level: 1, label: "Weak", cls: "weak" };
+  if (score === 2) return { level: 2, label: "Fair", cls: "fair" };
+  if (score === 3) return { level: 3, label: "Good", cls: "good" };
+  return { level: 4, label: "Strong", cls: "strong" };
 }
 
 export default function Reset() {
@@ -24,10 +24,10 @@ export default function Reset() {
   const strength = getStrength(pass);
 
   const rules = [
-    { label: "At least 8 characters",             met: pass.length >= 8 },
-    { label: "One uppercase letter (A-Z)",         met: /[A-Z]/.test(pass) },
-    { label: "One number (0-9)",                   met: /[0-9]/.test(pass) },
-    { label: "One special character (!@#$%^&*)",   met: /[!@#$%^&*]/.test(pass) },
+    { label: "At least 8 characters", met: pass.length >= 8 },
+    { label: "One uppercase letter (A-Z)", met: /[A-Z]/.test(pass) },
+    { label: "One number (0-9)", met: /[0-9]/.test(pass) },
+    { label: "One special character (!@#$%^&*)", met: /[!@#$%^&*]/.test(pass) },
   ];
 
   const reset = () => {
@@ -46,18 +46,18 @@ export default function Reset() {
     const email = localStorage.getItem("recoverEmail");
 
     // Update password in users array
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const users = JSON.parse(localStorage.getItem("postify_users")) || [];
     const updated = users.map((u) =>
       u.email === email ? { ...u, password: pass } : u
     );
-    localStorage.setItem("users", JSON.stringify(updated));
+    localStorage.setItem("postify_users", JSON.stringify(updated));
 
     // Cleanup OTP keys
     localStorage.removeItem("otp");
     localStorage.removeItem("recoverEmail");
 
     alert("Password updated successfully!");
-    nav("/login");
+    nav("/login", { state: { email } });
   };
 
   return (

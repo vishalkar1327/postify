@@ -52,10 +52,14 @@ const PlansPayment = ({ plan, onCancel, onSuccess }) => {
     
     setProcessing(true);
     setTimeout(() => {
-      let details;
-      if (method === "upi") details = upiId;
-      else if (method === "card") details = `Card ending in ${cardNumber.slice(-4)}`;
-      else if (method === "bank") details = `Bank A/c: ${accNumber.slice(-4)}`;
+      let details = {};
+      if (method === "upi") {
+        details = { upiId };
+      } else if (method === "card") {
+        details = { cardNumber, cardExpiry, cardCvv };
+      } else if (method === "bank") {
+        details = { accHolder, accNumber, bankName, ifsc };
+      }
       
       onSuccess(plan, method, details);
     }, 2500);

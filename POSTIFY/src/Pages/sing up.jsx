@@ -5,36 +5,44 @@ import { useNavigate } from "react-router-dom";
 // ===== PASSWORD STRENGTH CHECKER =====
 function getStrength(password) {
   let score = 0;
-  if (password.length >= 8)        score++;
-  if (/[A-Z]/.test(password))      score++;
-  if (/[0-9]/.test(password))      score++;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
   if (/[!@#$%^&*]/.test(password)) score++;
 
-  if (score === 0) return { level: 0, label: "",       cls: "" };
-  if (score === 1) return { level: 1, label: "Weak",   cls: "weak" };
-  if (score === 2) return { level: 2, label: "Fair",   cls: "fair" };
-  if (score === 3) return { level: 3, label: "Good",   cls: "good" };
-  return             { level: 4, label: "Strong", cls: "strong" };
+  if (score === 0) return { level: 0, label: "", cls: "" };
+  if (score === 1) return { level: 1, label: "Weak", cls: "weak" };
+  if (score === 2) return { level: 2, label: "Fair", cls: "fair" };
+  if (score === 3) return { level: 3, label: "Good", cls: "good" };
+  return { level: 4, label: "Strong", cls: "strong" };
 }
 
 export default function Signup() {
-  const [email, setEmail]               = useState("");
-  const [password, setPassword]         = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const nav = useNavigate();
 
   const strength = getStrength(password);
 
   const rules = [
-    { label: "At least 8 characters",           met: password.length >= 8 },
-    { label: "One uppercase letter (A-Z)",       met: /[A-Z]/.test(password) },
-    { label: "One number (0-9)",                 met: /[0-9]/.test(password) },
+    { label: "At least 8 characters", met: password.length >= 8 },
+    { label: "One uppercase letter (A-Z)", met: /[A-Z]/.test(password) },
+    { label: "One number (0-9)", met: /[0-9]/.test(password) },
     { label: "One special character (!@#$%^&*)", met: /[!@#$%^&*]/.test(password) },
   ];
 
   const signup = () => {
-    if (!email || !password) {
-      alert("Please fill in all fields.");
+    if (!email && !password) {
+      alert("Please enter both email and password.");
+      return;
+    }
+    if (!email) {
+      alert("Please enter your email.");
+      return;
+    }
+    if (!password) {
+      alert("Please enter your password.");
       return;
     }
 
@@ -44,7 +52,7 @@ export default function Signup() {
       return;
     }
 
-    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let users = JSON.parse(localStorage.getItem("postify_users")) || [];
 
     const exists = users.find((u) => u.email === email);
     if (exists) {
@@ -52,12 +60,35 @@ export default function Signup() {
       return;
     }
 
-    const newUser = { email, password };
+    const newUser = {
+      id: Date.now(),
+      name: email.split("@")[0], // Default name from email
+      email,
+      password,
+      plan: "Free",
+      credits: 50,
+      images: 0,
+      status: "Active",
+      joined: new Date().toISOString().split("T")[0]
+    };
     users.push(newUser);
-    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("postify_users", JSON.stringify(users));
+
+    // Create signup notification for admin
+    const signupTime = new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
+    const signupDate = new Date().toISOString().split("T")[0];
+    const notifications = JSON.parse(localStorage.getItem("postify_notifications")) || [];
+    const newNotif = {
+      id: Date.now(),
+      type: "signup",
+      msg: `New user ${newUser.name} signed up on ${signupDate} at ${signupTime}`,
+      time: signupTime,
+      read: false
+    };
+    localStorage.setItem("postify_notifications", JSON.stringify([newNotif, ...notifications]));
 
     alert("Account created successfully!");
-    nav("/login");
+    nav("/login", { state: { email } });
   };
 
   return (

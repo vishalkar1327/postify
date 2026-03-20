@@ -63,18 +63,39 @@
 }
 
 @keyframes postifyFloat1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(30px, 40px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(30px, 40px);
+  }
 }
 
 @keyframes postifyFloat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-25px, -35px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-25px, -35px);
+  }
 }
 
 @keyframes postifyFloat3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(15px, -20px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(15px, -20px);
+  }
 }
 
 /* ===== WRAPPER ===== */
@@ -128,8 +149,15 @@
 }
 
 @keyframes postifyPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .postify-left h1 {
@@ -198,8 +226,15 @@
 }
 
 @keyframes postifySlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== CARD HEADER ===== */
@@ -428,16 +463,38 @@
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
+  .postify-login-root {
+    padding: 1rem;
+  }
+
+  .postify-wrapper {
+    gap: 0;
+    justify-content: center;
+  }
+
   .postify-left {
     display: none;
   }
 
   .postify-card {
-    flex: 0 0 100%;
+    flex: 0 1 100%;
     width: 100%;
+    padding: 24px;
+    border-radius: 20px;
   }
 
-  .postify-wrapper {
-    justify-content: center;
+  .postify-card-header h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .postify-card {
+    padding: 20px 16px;
+  }
+
+  .postify-tab {
+    padding: 8px 12px;
+    font-size: 12px;
   }
 }

@@ -63,18 +63,39 @@
 }
 
 @keyframes resetFloat1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-28px, 36px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-28px, 36px);
+  }
 }
 
 @keyframes resetFloat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(22px, -30px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(22px, -30px);
+  }
 }
 
 @keyframes resetFloat3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-14px, 18px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-14px, 18px);
+  }
 }
 
 /* ===== WRAPPER ===== */
@@ -128,8 +149,15 @@
 }
 
 @keyframes resetPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .reset-left h1 {
@@ -209,8 +237,15 @@
 }
 
 @keyframes resetSlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== CARD HEADER ===== */
@@ -335,10 +370,21 @@
   transition: background 0.3s;
 }
 
-.reset-strength-seg.weak   { background: #ef4444; }
-.reset-strength-seg.fair   { background: #f97316; }
-.reset-strength-seg.good   { background: #eab308; }
-.reset-strength-seg.strong { background: #22c55e; }
+.reset-strength-seg.weak {
+  background: #ef4444;
+}
+
+.reset-strength-seg.fair {
+  background: #f97316;
+}
+
+.reset-strength-seg.good {
+  background: #eab308;
+}
+
+.reset-strength-seg.strong {
+  background: #22c55e;
+}
 
 .reset-strength-label {
   font-size: 11px;
@@ -347,10 +393,21 @@
   transition: color 0.3s;
 }
 
-.reset-strength-label.weak   { color: #ef4444; }
-.reset-strength-label.fair   { color: #f97316; }
-.reset-strength-label.good   { color: #eab308; }
-.reset-strength-label.strong { color: #22c55e; }
+.reset-strength-label.weak {
+  color: #ef4444;
+}
+
+.reset-strength-label.fair {
+  color: #f97316;
+}
+
+.reset-strength-label.good {
+  color: #eab308;
+}
+
+.reset-strength-label.strong {
+  color: #22c55e;
+}
 
 /* ===== RULES ===== */
 
@@ -445,7 +502,33 @@
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
-  .reset-left { display: none; }
-  .reset-card { flex: 0 0 100%; width: 100%; }
-  .reset-wrapper { justify-content: center; }
+  .reset-root {
+    padding: 1rem;
+  }
+
+  .reset-wrapper {
+    gap: 0;
+    justify-content: center;
+  }
+
+  .reset-left {
+    display: none;
+  }
+
+  .reset-card {
+    flex: 0 1 100%;
+    width: 100%;
+    padding: 24px;
+    border-radius: 20px;
+  }
+
+  .reset-card-header h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .reset-card {
+    padding: 20px 16px;
+  }
 }

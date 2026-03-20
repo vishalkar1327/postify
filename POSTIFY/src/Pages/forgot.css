@@ -63,18 +63,39 @@
 }
 
 @keyframes fpFloat1 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(28px, 36px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(28px, 36px);
+  }
 }
 
 @keyframes fpFloat2 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(-22px, -30px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-22px, -30px);
+  }
 }
 
 @keyframes fpFloat3 {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(14px, -18px); }
+
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(14px, -18px);
+  }
 }
 
 /* ===== WRAPPER ===== */
@@ -128,8 +149,15 @@
 }
 
 @keyframes fpPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 .fp-left h1 {
@@ -221,8 +249,15 @@
 }
 
 @keyframes fpSlideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== CARD HEADER ===== */
@@ -380,16 +415,33 @@
 /* ===== RESPONSIVE ===== */
 
 @media (max-width: 768px) {
+  .fp-root {
+    padding: 1rem;
+  }
+
+  .fp-wrapper {
+    gap: 0;
+    justify-content: center;
+  }
+
   .fp-left {
     display: none;
   }
 
   .fp-card {
-    flex: 0 0 100%;
+    flex: 0 1 100%;
     width: 100%;
+    padding: 24px;
+    border-radius: 20px;
   }
 
-  .fp-wrapper {
-    justify-content: center;
+  .fp-card-header h2 {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fp-card {
+    padding: 20px 16px;
   }
 }

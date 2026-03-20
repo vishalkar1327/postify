@@ -8,7 +8,6 @@ import Forgot from "./Pages/forgot.jsx";
 import Otp from "./Pages/otp.jsx";
 import Reset from "./Pages/reset.jsx";
 import Dashboard from "./Pages/Dashboard";
-import Admin from "./Pages/admin";
 import Generate from "./Pages/Generate";
 import UserDashboard from "./Pages/UserDashboard";
 
@@ -58,7 +57,7 @@ export default function App() {
 
       <Route
         path="/admin"
-        element={isAuth ? <Admin /> : <Navigate to="/login" />}
+        element={isAuth ? <Dashboard /> : <Navigate to="/login" />}
       />
 
       <Route
