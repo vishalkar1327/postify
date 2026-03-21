@@ -52,9 +52,10 @@ export default function Signup() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     let users = JSON.parse(localStorage.getItem("postify_users")) || [];
 
-    const exists = users.find((u) => u.email === email);
+    const exists = users.find((u) => u.email.toLowerCase() === normalizedEmail);
     if (exists) {
       alert("This email is already registered. Please log in.");
       return;
@@ -62,8 +63,8 @@ export default function Signup() {
 
     const newUser = {
       id: Date.now(),
-      name: email.split("@")[0], // Default name from email
-      email,
+      name: normalizedEmail.split("@")[0], // Default name from email
+      email: normalizedEmail,
       password,
       plan: "Free",
       credits: 50,

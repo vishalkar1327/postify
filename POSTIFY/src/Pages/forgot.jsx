@@ -12,8 +12,9 @@ export default function Forgot() {
       return;
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
     const users = JSON.parse(localStorage.getItem("postify_users")) || [];
-    const user = users.find((u) => u.email === email);
+    const user = users.find((u) => u.email.toLowerCase() === normalizedEmail);
 
     if (!user) {
       alert("No account found with this email.");

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import "./dashboard.css";
+import postifyLogo from "../assets/postify-logo.png";
 
 /* ─────────────────────────────────────────
    MOCK DATA
@@ -78,9 +79,9 @@ const injectStyles = () => {
     .pa-sidebar { width:220px; min-height:100vh; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; left:0; top:0; z-index:100; padding-bottom:24px; transition: transform 0.3s ease; }
     .pa-sidebar-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:95; }
     .pa-mobile-toggle { display:none; background:var(--surface2); border:1px solid var(--border2); color:white; width:40px; height:40px; border-radius:10px; cursor:pointer; align-items:center; justify-content:center; font-size:18px; }
-    .pa-logo { padding:24px 20px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; }
-    .pa-logo-mark { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-family:var(--display); font-weight:800; font-size:16px; color:#fff; }
-    .pa-logo-text { font-family:var(--display); font-weight:800; font-size:20px; letter-spacing:0.06em; }
+    .pa-logo { padding:24px 20px; display:flex; align-items:center; gap:10px; cursor:pointer; }
+    .pa-logo-mark { height:48px; width:auto; display:flex; align-items:center; justify-content:center; flex-shrink:0; pointer-events: none; filter: drop-shadow(0 0 8px rgba(79,142,255,0.15)); }
+    .pa-logo-text { font-family:var(--display); font-weight:800; font-size:24px; letter-spacing:0.8px; line-height:1; background:linear-gradient(to right, #fff, #8494b8); -webkit-background-clip:text; -webkit-text-fill-color:transparent; pointer-events: none; }
     .pa-nav { flex:1; padding:16px 10px; display:flex; flex-direction:column; gap:2px; overflow-y:auto; }
     .pa-nav-section { font-family:var(--font); font-size:10px; font-weight:700; letter-spacing:0.12em; color:var(--muted); text-transform:uppercase; padding:10px 10px 4px; }
     .pa-nav-item { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px; cursor:pointer; font-family:var(--font); font-size:13px; font-weight:500; color:var(--muted2); transition:all 0.18s; border:1px solid transparent; }
@@ -323,7 +324,15 @@ export default function PostifyAdmin() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [users, setUsers] = useState(() => {
     const saved = localStorage.getItem('postify_users');
-    if (saved) return JSON.parse(saved);
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {
+        console.error("Failed to parse users", e);
+      }
+    }
+    // Only set mock data if no real data exists
     localStorage.setItem('postify_users', JSON.stringify(INIT_USERS));
     return INIT_USERS;
   });
@@ -335,13 +344,23 @@ export default function PostifyAdmin() {
   });
   const [transactions, setTransactions] = useState(() => {
     const saved = localStorage.getItem('postify_transactions');
-    if (saved) return JSON.parse(saved);
-    localStorage.setItem('postify_transactions', JSON.stringify(INIT_TRANSACTIONS));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) { }
+    }
     return INIT_TRANSACTIONS;
   });
   const [notifs, setNotifs] = useState(() => {
     const saved = localStorage.getItem('postify_notifications');
-    return saved ? JSON.parse(saved) : INIT_NOTIFS;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) { }
+    }
+    return INIT_NOTIFS;
   });
   const [adminCredits, setAdminCredits] = useState(1080);
   const [search, setSearch] = useState("");
@@ -359,7 +378,16 @@ export default function PostifyAdmin() {
   const [topupUser, setTopupUser] = useState(null);
   const [topupAmt, setTopupAmt] = useState("");
   const [selectedPreset, setSelectedPreset] = useState(null);
-  const [genHistory, setGenHistory] = useState(INIT_GEN_HISTORY);
+  const [genHistory, setGenHistory] = useState(() => {
+    const saved = localStorage.getItem('postify_generations');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      } catch (e) { }
+    }
+    return INIT_GEN_HISTORY;
+  });
   const [historyFilter, setHistoryFilter] = useState("All");
   const [newUser, setNewUser] = useState({ name: "", email: "", plan: "Free", credits: 20 });
   const [newPlan, setNewPlan] = useState({ name: "", price: "", credits: "", features: "" });
@@ -447,7 +475,7 @@ export default function PostifyAdmin() {
   const showToast = (msg) => { setToast({ show: true, msg }); setTimeout(() => setToast({ show: false, msg: "" }), 3000); };
   const handleLogout = () => { localStorage.removeItem("isAuth"); localStorage.removeItem("role"); localStorage.removeItem("currentUser"); window.location.href = "/login"; };
 
-  const totalRevenue = transactions.filter(t => t.status === "Success").reduce((s, t) => s + t.amount, 0);
+  const totalRevenue = transactions.filter(t => t.status === "Success").reduce((s, t) => s + Number(t.amount || 0), 0);
   const planUserCount = (n) => users.filter(u => u.plan.toLowerCase() === n.toLowerCase()).length;
   const mostPopularPlan = () => { const c = {}; users.forEach(u => { c[u.plan] = (c[u.plan] || 0) + 1 }); return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || ""; };
 
@@ -482,8 +510,8 @@ export default function PostifyAdmin() {
     setTopupAmt("");
     showToast(action === 'add' ? `Added ${amount} credits!` : `Deducted ${amount} credits!`);
   };
-  const handleAddPlan = () => { if (!newPlan.name || !newPlan.price || !newPlan.credits) { showToast("Fill all fields!"); return; } const updated = [...plans, newPlan]; setPlans(updated); localStorage.setItem('postify_plans', JSON.stringify(updated)); setNewPlan({ name: "", price: "", credits: "", features: "" }); showToast("Plan added!"); };
-  const handleSaveEditPlan = () => { const updated = plans.map((p, i) => i === editingPlan.index ? editingPlan.data : p); setPlans(updated); localStorage.setItem('postify_plans', JSON.stringify(updated)); setModal(null); showToast("Plan updated!"); };
+  const handleAddPlan = () => { if (!newPlan.name || !newPlan.price || !newPlan.credits) { showToast("Fill all fields!"); return; } const updated = [...plans, { ...newPlan, price: Number(newPlan.price), credits: Number(newPlan.credits) }]; setPlans(updated); localStorage.setItem('postify_plans', JSON.stringify(updated)); setNewPlan({ name: "", price: "", credits: "", features: "" }); showToast("Plan added!"); };
+  const handleSaveEditPlan = () => { const updated = plans.map((p, i) => i === editingPlan.index ? { ...editingPlan.data, price: Number(editingPlan.data.price), credits: Number(editingPlan.data.credits) } : p); setPlans(updated); localStorage.setItem('postify_plans', JSON.stringify(updated)); setModal(null); showToast("Plan updated!"); };
   const handleDeletePlan = (i) => { const updated = plans.filter((_, idx) => idx !== i); setPlans(updated); localStorage.setItem('postify_plans', JSON.stringify(updated)); showToast("Plan deleted!"); };
   const markAllRead = () => {
     const updated = notifs.map(n => ({ ...n, read: true }));
@@ -494,10 +522,13 @@ export default function PostifyAdmin() {
 
   useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'postify_users') setUsers(JSON.parse(e.newValue));
-      if (e.key === 'postify_plans') setPlans(JSON.parse(e.newValue));
-      if (e.key === 'postify_transactions') setTransactions(JSON.parse(e.newValue));
-      if (e.key === 'postify_notifications') setNotifs(JSON.parse(e.newValue));
+      try {
+        if (e.key === 'postify_users') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setUsers(p); }
+        if (e.key === 'postify_plans') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setPlans(p); }
+        if (e.key === 'postify_transactions') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setTransactions(p); }
+        if (e.key === 'postify_notifications') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setNotifs(p); }
+        if (e.key === 'postify_generations') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setGenHistory(p); }
+      } catch (err) { console.error("Storage sync failed", err); }
     };
     window.addEventListener('storage', handleStorageChange);
     return () => window.removeEventListener('storage', handleStorageChange);
@@ -529,7 +560,7 @@ export default function PostifyAdmin() {
   const pageTitles = { dashboard: "Admin Dashboard", generate: "AI Generator", history: "Generation History", users: "User Management", transactions: "Transactions", credits: "Credits", plans: "Plan Management", notifications: "Notifications" };
   const filteredUsers = users.filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()));
   const filteredTx = transactions.filter(t => txFilter === "All" || t.status === txFilter);
-  const filteredHistory = genHistory.filter(h => historyFilter === "All" || h.user === historyFilter);
+  const filteredHistory = genHistory.filter(h => h && (historyFilter === "All" || h.user === historyFilter));
   const planBadgeClass = (plan) => { const p = plan?.toLowerCase(); if (p === "free") return "free"; if (p === "starter") return "starter"; if (p === "growth") return "growth"; return "business"; };
 
   const ThumbItem = ({ delay, src }) => (
@@ -544,8 +575,8 @@ export default function PostifyAdmin() {
       <div className={`pa-sidebar-overlay ${isSidebarOpen ? "show" : ""}`} onClick={() => setIsSidebarOpen(false)} />
 
       <aside className={`pa-sidebar ${isSidebarOpen ? "open" : ""}`}>
-        <div className="pa-logo">
-          <div className="pa-logo-mark">P</div>
+        <div className="pa-logo" onClick={() => setView("dashboard")} style={{ cursor: "pointer" }}>
+          <img src={postifyLogo} alt="Logo" className="pa-logo-mark" />
           <div className="pa-logo-text">POSTIFY</div>
         </div>
         <nav className="pa-nav">
@@ -613,9 +644,21 @@ export default function PostifyAdmin() {
               </div>
               <div className="pa-charts">
                 <div className="pa-chart-card">
-                  <div className="pa-chart-title">Revenue — Last 7 Days</div>
+                  <div className="pa-chart-title">Revenue — Dynamic Analytics</div>
                   <ResponsiveContainer width="100%" height={180}>
-                    <BarChart data={REVENUE_DATA} barSize={28}>
+                    <BarChart data={(() => {
+                      const last7Days = [...Array(7)].map((_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (6 - i));
+                        return d.toISOString().split('T')[0];
+                      });
+                      return last7Days.map(date => ({
+                        day: date.split('-').slice(1).join('/'),
+                        revenue: transactions
+                          .filter(t => t.status === "Success" && t.date === date)
+                          .reduce((sum, t) => sum + Number(t.amount || 0), 0)
+                      }));
+                    })()} barSize={28}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,140,255,0.07)" />
                       <XAxis dataKey="day" tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -625,9 +668,19 @@ export default function PostifyAdmin() {
                   </ResponsiveContainer>
                 </div>
                 <div className="pa-chart-card">
-                  <div className="pa-chart-title">Generations — Last 7 Days</div>
+                  <div className="pa-chart-title">Generations — Dynamic Analytics</div>
                   <ResponsiveContainer width="100%" height={180}>
-                    <LineChart data={GEN_DATA}>
+                    <LineChart data={(() => {
+                      const last7Days = [...Array(7)].map((_, i) => {
+                        const d = new Date();
+                        d.setDate(d.getDate() - (6 - i));
+                        return d.toISOString().split('T')[0];
+                      });
+                      return last7Days.map(date => ({
+                        day: date.split('-').slice(1).join('/'),
+                        gens: genHistory.filter(h => h && h.date === date).length
+                      }));
+                    })()}>
                       <CartesianGrid strokeDasharray="3 3" stroke="rgba(99,140,255,0.07)" />
                       <XAxis dataKey="day" tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                       <YAxis tick={{ fill: "var(--muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
@@ -651,7 +704,7 @@ export default function PostifyAdmin() {
               </div>
               <div className="pa-activity">
                 <div className="pa-section-hd">Recent Generations</div>
-                {genHistory.slice(0, 5).map((g, i) => (
+                {genHistory.filter(Boolean).slice(0, 5).map((g, i) => (
                   <div key={i} className="pa-activity-item">
                     <div className="pa-activity-dot" style={{ background: "var(--accent2)" }} />
                     <div className="pa-activity-text"><b>{g.user}</b> — {g.preset} · {g.background} · {g.angle}</div>
@@ -751,7 +804,7 @@ export default function PostifyAdmin() {
               <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "center" }}>
                 <select className="pa-select" value={historyFilter} onChange={e => setHistoryFilter(e.target.value)}>
                   <option value="All">All Users</option>
-                  {[...new Set(genHistory.map(h => h.user))].map(u => <option key={u} value={u}>{u}</option>)}
+                  {[...new Set(genHistory.filter(h => h && h.user).map(h => h.user))].map(u => <option key={u} value={u}>{u}</option>)}
                 </select>
                 <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 12, color: "var(--muted2)" }}>{filteredHistory.length} generations</div>
                 <button className="pa-btn" onClick={() => exportCSV(filteredHistory.map(h => ({ ...h, thumbnail: "[img]" })), "gen-history.csv")}>↓ Export CSV</button>
@@ -759,7 +812,7 @@ export default function PostifyAdmin() {
               {filteredHistory.length === 0
                 ? <div style={{ textAlign: "center", padding: "60px 20px", color: "var(--muted)" }}>No generations found</div>
                 : <div className="pa-history-grid">
-                  {filteredHistory.map(g => (
+                  {filteredHistory.filter(Boolean).map(g => (
                     <div key={g.id} className="pa-history-card" onClick={() => { setModalData(g); setModal("historyDetail"); }}>
                       <div className="pa-history-img">{g.thumbnail ? <img src={g.thumbnail} alt="" /> : <div className="pa-history-img-placeholder">🖼️</div>}</div>
                       <div className="pa-history-body">
@@ -778,7 +831,7 @@ export default function PostifyAdmin() {
                       <div className="pa-history-footer">
                         <span className="pa-badge success">{g.status}</span>
                         <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--warn)" }}>−{g.creditsUsed} cr</span>
-                        <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)" }}>#{g.id.slice(-6)}</span>
+                        <span style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--muted)" }}>#{String(g.id).slice(-6)}</span>
                       </div>
                     </div>
                   ))}
@@ -827,7 +880,7 @@ export default function PostifyAdmin() {
                   <option>All</option><option>Success</option><option>Failed</option>
                 </select>
                 <button className="pa-btn" onClick={() => exportCSV(filteredTx, "transactions.csv")}>↓ Export</button>
-                <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 13, color: "var(--accent2)" }}>Total: ₹{transactions.filter(t => t.status === "Success").reduce((s, t) => s + t.amount, 0).toLocaleString()}</div>
+                <div style={{ marginLeft: "auto", fontFamily: "var(--mono)", fontSize: 13, color: "var(--accent2)" }}>Total: ₹{transactions.filter(t => t.status === "Success").reduce((s, t) => s + Number(t.amount || 0), 0).toLocaleString()}</div>
               </div>
               <table>
                 <thead><tr><th>TXN ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Credits</th><th>Payment Details</th><th>Date</th><th>Status</th></tr></thead>
@@ -1052,14 +1105,14 @@ export default function PostifyAdmin() {
             </div>
             <div style={{ marginBottom: 18 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 8, fontFamily: "var(--font)" }}>
-                Gen History ({genHistory.filter(g => g.user === modalData.name).length})
+                Gen History ({genHistory.filter(g => g && g.user === modalData.name).length})
               </div>
-              {genHistory.filter(g => g.user === modalData.name).length === 0
+              {genHistory.filter(g => g && g.user === modalData.name).length === 0
                 ? <div style={{ fontSize: 13, color: "var(--muted)" }}>No generations yet</div>
-                : genHistory.filter(g => g.user === modalData.name).slice(0, 3).map((g, i) => (
+                : genHistory.filter(g => g && g.user === modalData.name).slice(0, 3).map((g, i) => (
                   <div key={i} style={{ background: "var(--surface3)", border: "1px solid var(--border)", borderRadius: 10, padding: "10px 12px", fontSize: 12, marginBottom: 8 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
-                      <b style={{ fontFamily: "var(--mono)", color: "var(--accent)" }}>#{g.id.slice(-6)}</b>
+                      <b style={{ fontFamily: "var(--mono)", color: "var(--accent)" }}>#{String(g.id).slice(-6)}</b>
                       <span style={{ color: "var(--muted)", fontFamily: "var(--mono)" }}>{g.date} {g.time}</span>
                     </div>
                     <div style={{ color: "var(--muted2)" }}>{g.preset} · {g.background} · {g.angle}</div>

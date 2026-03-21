@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./UserDashboard.css";
 import PlansPayment from "./planspayment";
+import postifyLogo from "../assets/postify-logo.png";
 
 const Dashboard = ({ onLogout }) => {
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -21,6 +22,8 @@ const Dashboard = ({ onLogout }) => {
   const [favorites, setFavorites] = useState([]);
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const dropdownRef = React.useRef(null);
 
   const [userEmail, setUserEmail] = useState(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -42,12 +45,18 @@ const Dashboard = ({ onLogout }) => {
   });
 
   const [users, setUsers] = useState(() => {
-    const saved = localStorage.getItem('postify_users');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem('postify_users');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
   });
-  const [plans, setPlans] = useState(() => {
-    const saved = localStorage.getItem('postify_plans');
-    return saved ? JSON.parse(saved) : [];
+  const [plans, ] = useState(() => {
+    try {
+      const saved = localStorage.getItem('postify_plans');
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch(e) { return []; }
   });
 
   const currentUser = users.find(u => u.email === userEmail) || { credits: 0, plan: "Free" };
@@ -55,11 +64,20 @@ const Dashboard = ({ onLogout }) => {
 
   React.useEffect(() => {
     const handleStorageChange = (e) => {
-      if (e.key === 'postify_users') setUsers(JSON.parse(e.newValue));
-      if (e.key === 'postify_plans') setPlans(JSON.parse(e.newValue));
+      try {
+        if (e.key === 'postify_users') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setUsers(p); }
+        if (e.key === 'postify_plans') { const p = JSON.parse(e.newValue); if (Array.isArray(p)) setPlans(p); }
+      } catch (err) {}
+    };
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) setShowProfileDropdown(false);
     };
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const styles = ["Ecommerce", "Instagram Ad", "Luxury Product", "White Background"];
@@ -121,12 +139,31 @@ const Dashboard = ({ onLogout }) => {
       setGeneratedImage(previewUrl);
       const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       const newVersion = { url: previewUrl, label: `Version ${versions.length + 1}`, bg: background, angle: activeAngle, style: activeStyle, time, desc: description };
+      
       setVersions((prev) => {
         const updated = [...prev, newVersion];
         setActiveVersion(updated.length - 1);
         return updated;
       });
-      setHistory((prev) => [{ ...newVersion, id: Date.now() }, ...prev]);
+
+      const genItem = { ...newVersion, id: Date.now(), user: profileName, email: profileEmail, date: new Date().toISOString().split("T")[0] };
+      setHistory((prev) => [genItem, ...prev]);
+
+      // Sync to localStorage for Admin
+      const savedGens = JSON.parse(localStorage.getItem('postify_generations') || '[]');
+      localStorage.setItem('postify_generations', JSON.stringify([genItem, ...savedGens]));
+
+      // Add notification for Admin
+      const notifications = JSON.parse(localStorage.getItem('postify_notifications') || '[]');
+      const newNotif = {
+        id: Date.now(),
+        type: "generation",
+        msg: `${profileName} generated a ${activeStyle} image with ${background} background`,
+        time: time,
+        read: false
+      };
+      localStorage.setItem('postify_notifications', JSON.stringify([newNotif, ...notifications]));
+
       setIsGenerating(false);
       setShowAfter(true);
       showToast(`Image generated! ${activeStyle} · ${background}`);
@@ -208,6 +245,17 @@ const Dashboard = ({ onLogout }) => {
 
     const newTxns = [newTxn, ...txns];
     localStorage.setItem('postify_transactions', JSON.stringify(newTxns));
+
+    // Add notification for Admin
+    const notifications = JSON.parse(localStorage.getItem('postify_notifications') || '[]');
+    const newNotif = {
+      id: Date.now(),
+      type: "payment",
+      msg: `${profileName} purchased ${plan.name} plan for ₹${plan.price}`,
+      time: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" }),
+      read: false
+    };
+    localStorage.setItem('postify_notifications', JSON.stringify([newNotif, ...notifications]));
 
     setSelectedPlan(null);
     showToast(`Successfully purchased ${plan.name} plan! (+${plan.credits} credits). TXN ID: ${newTxn.transactionId}`);
@@ -503,8 +551,9 @@ const Dashboard = ({ onLogout }) => {
 
       {/* SIDEBAR */}
       <aside className={`dash-sidebar ${isSidebarOpen ? "sidebar-active" : ""}`}>
-        <div className="dash-logo-wrap">
-          <span className="dash-logo-text">POSTIFY</span>
+        <div className="dash-logo-wrap" onClick={() => navigate("studio")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", padding: "0" }}>
+          <img src={postifyLogo} alt="Logo" style={{ height: "48px", width: "auto", objectFit: "contain" }} />
+          <span className="dash-logo-text" style={{ fontSize: "24px", fontWeight: "800", letterSpacing: "1px", lineHeight: 1 }}>POSTIFY</span>
         </div>
         <nav className="dash-nav">
           <div className="dash-nav-group">
@@ -539,9 +588,42 @@ const Dashboard = ({ onLogout }) => {
               <p className="dash-topbar-sub">{pageTitles[currentPage][1]}</p>
             </div>
           </div>
-          <div className="dash-user-badge">
+          <div className="dash-user-badge" onClick={() => setShowProfileDropdown(!showProfileDropdown)} ref={dropdownRef} style={{ cursor: "pointer", position: "relative" }}>
             <span className="dash-user-avatar">{avatarInitials}</span>
             <span className="dash-user-name">{profileName}</span>
+            <span style={{ fontSize: "10px", opacity: 0.5 }}>▼</span>
+            
+            {showProfileDropdown && (
+              <div className="profile-dropdown" onClick={(e) => e.stopPropagation()}>
+                <div className="dropdown-header">
+                  <div className="dropdown-avatar">{avatarInitials}</div>
+                  <div className="dropdown-info">
+                    <p className="dropdown-name">{profileName}</p>
+                    <p className="dropdown-email">{profileEmail}</p>
+                  </div>
+                </div>
+                <div className="dropdown-body">
+                  <div className="dropdown-item">
+                    <span className="di-label">Plan</span>
+                    <span className="di-val gradient-text">{currentUser.plan}</span>
+                  </div>
+                  <div className="dropdown-item">
+                    <span className="di-label">Credits</span>
+                    <span className="di-val">{credits}</span>
+                  </div>
+                  {profileBrand && (
+                    <div className="dropdown-item">
+                      <span className="di-label">Brand</span>
+                      <span className="di-val">{profileBrand}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="dropdown-footer">
+                  <button className="dropdown-btn" onClick={() => { navigate("profile"); setShowProfileDropdown(false); }}>View Profile</button>
+                  <button className="dropdown-btn logout" onClick={onLogout}>Logout</button>
+                </div>
+              </div>
+            )}
           </div>
         </header>
         {(pages[currentPage] || renderStudio)()}

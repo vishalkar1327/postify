@@ -47,6 +47,7 @@ export default function Login({ setIsAuth }) {
 
     const adminEmail = "admin@postify.com";
     const adminPassword = "123456";
+    const normalizedEmail = email.trim().toLowerCase();
 
     // ===== SAVE OR CLEAR REMEMBER ME =====
     if (rememberMe) {
@@ -61,7 +62,7 @@ export default function Login({ setIsAuth }) {
 
     // ===== ADMIN TAB =====
     if (role === "admin") {
-      if (email === adminEmail && password === adminPassword) {
+      if (normalizedEmail === adminEmail && password === adminPassword) {
         localStorage.setItem("isAuth", "true");
         localStorage.setItem("role", "admin");
         setIsAuth(true);
@@ -75,13 +76,13 @@ export default function Login({ setIsAuth }) {
 
     // ===== USER TAB =====
     if (role === "user") {
-      if (email === adminEmail) {
+      if (normalizedEmail === adminEmail) {
         alert("Please use the Admin tab to login as admin.");
         return;
       }
 
       const users = JSON.parse(localStorage.getItem("postify_users")) || [];
-      const userExists = users.find((u) => u.email === email);
+      const userExists = users.find((u) => u.email.toLowerCase() === normalizedEmail);
 
       if (!userExists) {
         alert("Account not found. Please sign up.");
